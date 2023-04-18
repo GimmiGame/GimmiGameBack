@@ -23,7 +23,7 @@ export class AuthService {
     };
   }
   async signUp(username: string, pass: string): Promise<any> {
-    this.logger.log(`signIn: ${username}`);
+    this.logger.log(`signUp: ${username}`);
     const user = await this.usersService.findOne(username);
     if (user) {
       throw new UnauthorizedException();
