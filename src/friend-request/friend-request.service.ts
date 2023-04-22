@@ -25,8 +25,14 @@ export class FriendRequestService {
     if (friend.id === ownerUser.id) {
       throw new Error('You cannot add yourself as a friend');
     }
-
-    return this.friendRequestInfrastructure.addFriendRequest(friend, ownerUser);
+    const alreadyFriendRequest = await this.verifyFriendRequestAlready(
+      ownerUser,
+      friend,
+    );
+    if (!alreadyFriendRequest) {
+      throw new Error('Friend request already sent');
+    }
+    this.friendRequestInfrastructure.addFriendRequest(friend, ownerUser);
   }
 
   async acceptFriendRequest(friendName: string, ownerName: string) {
@@ -50,7 +56,8 @@ export class FriendRequestService {
     if (!friendRequest) {
       throw new Error('Friend request not found');
     }
-    return this.friendRequestInfrastructure.acceptFriendRequest(friendRequest);
+    await this.userInfrastructure.addFriend(friend, ownerUser);
+    await this.friendRequestInfrastructure.acceptFriendRequest(friendRequest);
   }
 
   async listSenderFriendRequest(ownerName: string) {
@@ -58,7 +65,11 @@ export class FriendRequestService {
     if (!ownerUser) {
       throw new Error('Owner not found');
     }
-    return this.friendRequestInfrastructure.listSenderFriendRequest(ownerUser);
+    const resultFriendRequest =
+      await this.friendRequestInfrastructure.listSenderFriendRequest(ownerUser);
+    return resultFriendRequest.filter(
+      (friendRequest) => !friendRequest.accepted,
+    );
   }
 
   async listReceiverFriendRequest(ownerName: string) {
@@ -67,8 +78,32 @@ export class FriendRequestService {
       throw new Error('Owner not found');
     }
     this.logger.log(`listReceiverFriendRequest: ${ownerUser.username}`);
-    return this.friendRequestInfrastructure.listReceiverFriendRequest(
-      ownerUser,
+    const resultFriendRequest =
+      await this.friendRequestInfrastructure.listReceiverFriendRequest(
+        ownerUser,
+      );
+    return resultFriendRequest.filter(
+      (friendRequest) => !friendRequest.accepted,
     );
+  }
+
+  async verifyFriendRequestAlready(userOwner: User, userFriend: User) {
+    const friendRequest =
+      await this.friendRequestInfrastructure.findReceiverAndSenderFriendRequests(
+        userOwner,
+        userFriend,
+      );
+    if (friendRequest) {
+      return false;
+    }
+    const friendRequest2 =
+      await this.friendRequestInfrastructure.findReceiverAndSenderFriendRequests(
+        userFriend,
+        userOwner,
+      );
+    if (friendRequest2) {
+      return false;
+    }
+    return true;
   }
 }

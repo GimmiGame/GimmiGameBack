@@ -39,4 +39,15 @@ export class UsersInfrastructure {
     createdUser.active = false;
     return await this.usersRepository.save(createdUser);
   }
+
+  async addFriend(friend: User, owner: User): Promise<void> {
+    this.logger.log(`owner: ${owner.friends}`);
+    if (owner.friends === undefined) {
+      owner.friends = [friend];
+    } else {
+      owner.friends.push(friend);
+    }
+    owner.friends.push(friend);
+    await this.usersRepository.save(owner);
+  }
 }

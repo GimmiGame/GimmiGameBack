@@ -51,7 +51,7 @@ export class FriendRequestInfrastructure {
     createdFriendRequest.sender = ownerUser;
     createdFriendRequest.receiver = friend;
     createdFriendRequest.sentAt = new Date();
-    createdFriendRequest.accepted = true;
+    createdFriendRequest.accepted = false;
     return await this.friendRequestRepository.save(createdFriendRequest);
   }
 

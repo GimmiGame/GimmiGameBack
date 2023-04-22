@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -12,4 +12,6 @@ export class User {
   email: string;
   @Column()
   active: boolean;
+  @ManyToMany(() => User, (user) => user.friends)
+  friends: User[];
 }
