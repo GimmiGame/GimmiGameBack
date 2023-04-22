@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserDto } from '../auth/dto/create-user.dto';
 
 @Injectable()
 export class UsersInfrastructure {
@@ -30,16 +31,11 @@ export class UsersInfrastructure {
     await this.usersRepository.delete(id);
   }
 
-  async create(
-    username: string,
-    password: string,
-    email: string,
-  ): Promise<User> {
-    this.logger.log(`create: ${username}, ${password}`);
+  async create(signUpDto: CreateUserDto): Promise<User> {
     const createdUser = new User();
-    createdUser.username = username;
-    createdUser.password = password;
-    createdUser.email = email;
+    createdUser.username = signUpDto.username;
+    createdUser.password = signUpDto.password;
+    createdUser.email = signUpDto.email;
     createdUser.active = false;
     return await this.usersRepository.save(createdUser);
   }

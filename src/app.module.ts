@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
+import { FriendRequestModule } from './friend-request/friend-request.module';
+import { FriendRequest } from './friend-request/friend-request.entity';
 
 @Module({
   imports: [
@@ -12,7 +14,7 @@ import { User } from './users/user.entity';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      entities: [User],
+      entities: [User, FriendRequest],
       username: 'postgres',
       password: 'postgres',
       database: 'game',
@@ -20,6 +22,7 @@ import { User } from './users/user.entity';
     }),
     AuthModule,
     UsersModule,
+    FriendRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

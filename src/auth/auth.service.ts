@@ -1,7 +1,14 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotAcceptableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { AuthenticationUserDto } from './dto/authentication-user.dto';
 @Injectable()
 export class AuthService {
   private logger = new Logger(AuthService.name);
@@ -10,11 +17,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(username: string, pass: string): Promise<any> {
-    this.logger.log(`signIn: ${username}`);
-    const bcryptPassword = await this.buildBcryptPassword(pass);
-    const user = await this.usersService.findOne(username);
-    if (user?.password !== bcryptPassword) {
+  async signIn(signInDto: AuthenticationUserDto): Promise<any> {
+    this.logger.log(`signIn: ${signInDto.username}`);
+    const user = await this.usersService.findOne(signInDto.username);
+    if (!user) {
+      throw new NotAcceptableException('could not find the user');
+    }
+    const passwordValid = await bcrypt.compare(
+      signInDto.password,
+      user.password,
+    );
+    if (!passwordValid) {
       throw new UnauthorizedException();
     }
     const payload = { username: user.username, sub: user.id };
@@ -22,18 +35,17 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-  async signUp(username: string, pass: string, email: string): Promise<any> {
-    this.logger.log(`signUp: ${username}`);
-    const user = await this.usersService.findOne(username);
+  async signUp(signUpDto: CreateUserDto): Promise<any> {
+    const user = await this.usersService.findOne(signUpDto.username);
     if (user) {
       throw new UnauthorizedException();
     }
-    const bcryptPassword = await this.buildBcryptPassword(pass);
-    const userCreated = await this.usersService.create(
-      username,
-      bcryptPassword,
-      email,
-    );
+    const bcryptPassword = await this.buildBcryptPassword(signUpDto.password);
+    const userDao = new CreateUserDto();
+    userDao.username = signUpDto.username;
+    userDao.password = bcryptPassword;
+    userDao.email = signUpDto.email;
+    const userCreated = await this.usersService.create(userDao);
     const payload = { username: userCreated.username, sub: userCreated.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
