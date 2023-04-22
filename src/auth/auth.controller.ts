@@ -11,7 +11,7 @@ import {
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
-import { User } from '../users/user.schema';
+import { User } from '../users/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +27,11 @@ export class AuthController {
   @Public()
   @Post('register')
   signUp(@Body() signUpDto: Record<string, any>) {
-    return this.authService.signUp(signUpDto.username, signUpDto.password);
+    return this.authService.signUp(
+      signUpDto.username,
+      signUpDto.password,
+      signUpDto.email,
+    );
   }
 
   @UseGuards(AuthGuard)

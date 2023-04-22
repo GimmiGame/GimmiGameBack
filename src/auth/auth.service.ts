@@ -17,12 +17,12 @@ export class AuthService {
     if (user?.password !== bcryptPassword) {
       throw new UnauthorizedException();
     }
-    const payload = { username: user.username, sub: user._id };
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-  async signUp(username: string, pass: string): Promise<any> {
+  async signUp(username: string, pass: string, email: string): Promise<any> {
     this.logger.log(`signUp: ${username}`);
     const user = await this.usersService.findOne(username);
     if (user) {
@@ -32,8 +32,9 @@ export class AuthService {
     const userCreated = await this.usersService.create(
       username,
       bcryptPassword,
+      email,
     );
-    const payload = { username: userCreated.username, sub: userCreated._id };
+    const payload = { username: userCreated.username, sub: userCreated.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
