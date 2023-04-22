@@ -40,6 +40,7 @@ export class UsersInfrastructure {
     createdUser.username = username;
     createdUser.password = password;
     createdUser.email = email;
+    createdUser.active = false;
     return await this.usersRepository.save(createdUser);
   }
 }
