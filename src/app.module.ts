@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { FriendRequestModule } from './friend-request/friend-request.module';
 import { FriendRequest } from './friend-request/friend-request.entity';
+import { RoomPartyModule } from './room-party/room-party.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FriendRequest } from './friend-request/friend-request.entity';
     AuthModule,
     UsersModule,
     FriendRequestModule,
+    RoomPartyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
