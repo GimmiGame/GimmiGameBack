@@ -1,10 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { RoomParty } from './room-party.entity';
 import { RoomPartyInfrastructure } from './room-party.infrastructure';
-import { CreateRoomDTO } from './dto/create-room-request.dto';
-import { User } from 'src/users/user.entity';
 import { UsersInfrastructure } from 'src/users/user.infrastructure';
 
 @Injectable()
