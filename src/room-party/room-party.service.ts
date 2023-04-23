@@ -9,11 +9,12 @@ export class RoomPartyService {
     constructor(private roomPartyInfrastructure : RoomPartyInfrastructure, private userInfrastructure: UsersInfrastructure) {}
     
     async createRoom(creatorUsername : string, gameName : string, gamePlayed : string) {
-
         const creator = await this.userInfrastructure.findOneBy(creatorUsername);
 
         if(creator) {
-            return this.roomPartyInfrastructure.createRoom(creator,gameName,gamePlayed)
+            const roomParty =  this.roomPartyInfrastructure.createRoom(creator,gameName,gamePlayed)
+            this.logger.log(`createRoom: ${(await roomParty).id} by: ${creatorUsername} with game: ${gamePlayed}`);
+            return roomParty;
         }
     }
 
@@ -22,6 +23,7 @@ export class RoomPartyService {
         const user = await this.userInfrastructure.findOneBy(username);
 
         if(roomParty && user) {
+            this.logger.log(`player ${username} joined room: ${roomID}`)
             roomParty.currentPlayers.push(user);
         }
     }
@@ -31,11 +33,13 @@ export class RoomPartyService {
         const user = await this.userInfrastructure.findOneBy(username);
 
         if(roomParty && user) {
+            this.logger.log(`player ${username} left room: ${roomID}`)
             const index = roomParty.currentPlayers.indexOf(user, 0);
             if (index > -1) {
                 roomParty.currentPlayers.splice(index, 1);
             }
             if(roomParty.currentPlayers.length === 0) {
+                this.logger.log(`the room: ${roomID} was closed because no player was left`)
                 roomParty.terminated = true;
             }
         }
@@ -46,6 +50,7 @@ export class RoomPartyService {
         const user = await this.userInfrastructure.findOneBy(username);
 
         if(roomParty && user) {
+            this.logger.log(`player ${username} saved the room: ${roomID}`)
             roomParty.saved = true;
         }
     }

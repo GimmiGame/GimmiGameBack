@@ -8,6 +8,7 @@ import { User } from './users/user.entity';
 import { FriendRequestModule } from './friend-request/friend-request.module';
 import { FriendRequest } from './friend-request/friend-request.entity';
 import { RoomPartyModule } from './room-party/room-party.module';
+import { RoomParty } from './room-party/room-party.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { RoomPartyModule } from './room-party/room-party.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      entities: [User, FriendRequest],
+      entities: [User, FriendRequest, RoomParty],
       username: 'postgres',
       password: 'postgres',
       database: 'game',

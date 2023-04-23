@@ -12,12 +12,12 @@ export class RoomPartyController {
     @UseGuards(AuthGuard)
     @Post('create')
     createRoom(@Request() req: AuthenticatedRequest, @Body() createRoomDTO : CreateRoomDTO) {
-        this.roomPartyService.createRoom(req.user.username, createRoomDTO.gameName, createRoomDTO.gamePlayed);
+        return this.roomPartyService.createRoom(req.user.username, createRoomDTO.gameName, createRoomDTO.gamePlayed);
     }
 
     @UseGuards(AuthGuard)
     @Post('join:id')
     joinRoom(@Request() req: AuthenticatedRequest, @Param('id') id : number) {
-        this.roomPartyService.joinRoom(req.user.username, id);
+        return this.roomPartyService.joinRoom(req.user.username, id);
     }
 }
