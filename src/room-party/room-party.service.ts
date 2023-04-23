@@ -24,6 +24,7 @@ export class RoomPartyService {
 
         if(roomParty && user) {
             this.logger.log(`player ${username} joined room: ${roomID}`)
+            roomParty.currentPlayers
             roomParty.currentPlayers.push(user);
         }
     }

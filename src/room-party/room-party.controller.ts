@@ -16,7 +16,7 @@ export class RoomPartyController {
     }
 
     @UseGuards(AuthGuard)
-    @Post('join:id')
+    @Post('join/:id')
     joinRoom(@Request() req: AuthenticatedRequest, @Param('id') id : number) {
         return this.roomPartyService.joinRoom(req.user.username, id);
     }
