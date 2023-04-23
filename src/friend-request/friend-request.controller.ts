@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   Logger,
   Post,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -41,16 +44,34 @@ export class FriendRequestController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('listsender')
+  @Get('listsender')
   listSenderFriendRequest(@Request() req: AuthenticatedRequest) {
     this.logger.log(`listSenderFriendRequest: ${req.user.username}`);
     return this.friendRequestService.listSenderFriendRequest(req.user.username);
   }
 
   @UseGuards(AuthGuard)
-  @Post('listreceiver')
+  @Get('listreceiver')
   listReceiverFriendRequest(@Request() req: AuthenticatedRequest) {
     return this.friendRequestService.listReceiverFriendRequest(
+      req.user.username,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('listfriends')
+  listFriends(@Request() req: AuthenticatedRequest) {
+    return this.friendRequestService.listAllFriends(req.user.username);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('delete')
+  deleteFriendRequest(
+    @Request() req: AuthenticatedRequest,
+    @Body() deleteFriendRequestDto: Add_friendRequestDto,
+  ) {
+    return this.friendRequestService.removeFriend(
+      deleteFriendRequestDto.friendName,
       req.user.username,
     );
   }

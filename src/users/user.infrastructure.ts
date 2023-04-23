@@ -49,4 +49,21 @@ export class UsersInfrastructure {
     }
     await this.usersRepository.save(owner);
   }
+
+  async removeFriend(friend: User, owner: User): Promise<void> {
+    owner.friends = owner.friends.filter((f) => f.id !== friend.id);
+    await this.usersRepository.save(owner);
+  }
+
+  async findAllFriends(owner: User): Promise<User[]> {
+    return await this.usersRepository.find({
+      where: { id: owner.id },
+      relations: ['friends'],
+    });
+  }
+
+  async friendshipAccepted(owner: User, friend: User): Promise<boolean> {
+    const ownerFriends = await this.findAllFriends(owner);
+    return ownerFriends.some((f) => f.id === friend.id);
+  }
 }

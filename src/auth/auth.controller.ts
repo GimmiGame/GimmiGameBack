@@ -17,11 +17,15 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthenticationUserDto } from './dto/authentication-user.dto';
 import { AuthenticatedRequest } from '../interface/authenticated_request';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 export class AuthController {
   private logger = new Logger(AuthController.name);
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Public()
@@ -44,13 +48,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() request: AuthenticatedRequest): string {
-    return request.user.username;
-  }
-
-  @Public()
-  @Get()
-  findAll() {
-    return [];
+  getProfile(@Request() request: AuthenticatedRequest) {
+    return this.userService.findOneByUsername(request.user.username);
   }
 }

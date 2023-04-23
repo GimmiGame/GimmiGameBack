@@ -6,6 +6,7 @@ import { FriendRequest } from './friend-request.entity';
 import { FriendRequestInfrastructure } from './friend-request.infrastructure';
 import { UsersInfrastructure } from '../users/user.infrastructure';
 import { User } from '../users/user.entity';
+import { FriendRequestMapper } from './mapper/friend-request.mapper';
 
 @Module({
   imports: [
@@ -14,10 +15,15 @@ import { User } from '../users/user.entity';
   ],
   providers: [
     FriendRequestService,
+    FriendRequestMapper,
     FriendRequestInfrastructure,
     UsersInfrastructure,
   ],
   controllers: [FriendRequestController],
-  exports: [FriendRequestService, FriendRequestInfrastructure],
+  exports: [
+    FriendRequestService,
+    FriendRequestInfrastructure,
+    FriendRequestMapper,
+  ],
 })
 export class FriendRequestModule {}
