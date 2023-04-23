@@ -47,7 +47,6 @@ export class UsersInfrastructure {
     } else {
       owner.friends.push(friend);
     }
-    owner.friends.push(friend);
     await this.usersRepository.save(owner);
   }
 }
