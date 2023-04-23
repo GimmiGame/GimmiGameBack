@@ -12,7 +12,7 @@ export class RoomParty {
     @Column()
     game : string;
 
-    @ManyToMany(() => User)
+    @ManyToMany(() => User, user => user.currentRooms, {nullable: true})
     @JoinTable()
     currentPlayers : User[];
 
