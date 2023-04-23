@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { RoomParty } from "./room-party.entity";
 import { User } from "src/users/user.entity";
+import { RoomParty } from "./room-party.entity";
 
 @Injectable()
 export class RoomPartyInfrastructure {
